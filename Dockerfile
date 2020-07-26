@@ -9,6 +9,10 @@ RUN apk add --no-cache \
     rsync
 
 ENV VERSION 0.64.0
+
+# TODO: Put downloads in a volume.
+# TODO: Set CMD to 'make server' or so.
+
 RUN mkdir -p /usr/local/src \
     && cd /usr/local/src \
 
