@@ -15,5 +15,11 @@ server:
 	@echo "Starting server..."
 	@docker run -dt --rm -v "$(realpath ./orgdocs)":/src -p 1313:1313 lp/hugo-builder hugo server -w --bind=0.0.0.0
 	@echo "Server started!"
+	@docker ps
+
+static:
+	@echo "Performing static analysis..."
+	@hadolint Dockerfile
+	@echo "Static analysis performed!"
 
 .PHONY: build
