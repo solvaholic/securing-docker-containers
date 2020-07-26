@@ -1,6 +1,5 @@
-FROM alpine:latest
+FROM alpine:3.12
 
-MAINTAINER solvaholic <me@foo.bar>
 LABEL maintainer="solvaholic <me@foo.bar>"
 
 RUN apk add --no-cache \
@@ -10,14 +9,14 @@ RUN apk add --no-cache \
     rsync
 
 ENV VERSION 0.64.0
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 # TODO: Put downloads in a volume.
 # TODO: Set CMD to 'make server' or so.
 
-RUN mkdir -p /usr/local/src \
-    && cd /usr/local/src \
+WORKDIR /usr/local/src
 
-    && curl -L \
+RUN curl -L \
       https://github.com/gohugoio/hugo/releases/download/v${VERSION}/hugo_${VERSION}_linux-64bit.tar.gz \
       | tar -xz \
     && mv hugo /usr/local/bin/hugo \
