@@ -1,6 +1,7 @@
 FROM alpine:latest
 
-MAINTAINER PS <psellars@gmail.com>
+MAINTAINER solvaholic <me@foo.bar>
+LABEL maintainer="solvaholic <me@foo.bar>"
 
 RUN apk add --no-cache \
     curl \
