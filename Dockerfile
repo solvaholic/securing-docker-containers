@@ -8,9 +8,9 @@ RUN apk add --no-cache \
     openssh-client \
     rsync
 
-ENV
-  - VERSION 0.64.0
-  - SHASUM 99c4752bd46c72154ec45336befdf30c28e6a570c3ae7cc237375cf116cba1f8
+ENV VERSION 0.64.0
+ENV SHASUM 99c4752bd46c72154ec45336befdf30c28e6a570c3ae7cc237375cf116cba1f8
+ENV HUGOTGZ hugo_${VERSION}_Linux-64bit.tar.gz
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD curl -f http://localhost:1313 || exit 1
@@ -19,17 +19,12 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 # TODO: Put downloads in a volume.
 
-WORKDIR /usr/local/src
+WORKDIR /usr/local/src/hugo
 
-RUN curl -OL https://github.com/gohugoio/hugo/releases/download/v${VERSION}/hugo_${VERSION}_Linux-64bit.tar.gz
- \
-      | tar -xz \
+ADD https://github.com/gohugoio/hugo/releases/download/v${VERSION}/${HUGOTGZ} .
+RUN sha256sum ${HUGOTGZ} | grep -q ${SHASUM}
+RUN tar -xzf ${HUGOTGZ} \
     && mv hugo /usr/local/bin/hugo \
-
-    && curl -L \
-      https://bin.equinox.io/c/dhgbqpS8Bvy/minify-stable-linux-amd64.tgz | tar -xz \
-    && mv minify /usr/local/bin/ \
-
     && addgroup -Sg 1000 hugo \
     && adduser -SG hugo -u 1000 -h /src hugo
 
