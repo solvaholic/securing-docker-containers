@@ -8,16 +8,21 @@ RUN apk add --no-cache \
     openssh-client \
     rsync
 
-ENV VERSION 0.64.0
+ENV
+  - VERSION 0.64.0
+  - SHASUM 99c4752bd46c72154ec45336befdf30c28e6a570c3ae7cc237375cf116cba1f8
+
+HEALTHCHECK --interval=1m --timeout=10s \
+  CMD curl -f http://localhost:1313 || exit 1
+
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 # TODO: Put downloads in a volume.
-# TODO: Set CMD to 'make server' or so.
 
 WORKDIR /usr/local/src
 
-RUN curl -L \
-      https://github.com/gohugoio/hugo/releases/download/v${VERSION}/hugo_${VERSION}_linux-64bit.tar.gz \
+RUN curl -OL https://github.com/gohugoio/hugo/releases/download/v${VERSION}/hugo_${VERSION}_Linux-64bit.tar.gz
+ \
       | tar -xz \
     && mv hugo /usr/local/bin/hugo \
 
