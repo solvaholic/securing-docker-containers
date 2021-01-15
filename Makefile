@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+# TODO: Learn from https://gist.github.com/mouttounet/d8347e0555c1d232b7bacb881c3ef1da
+
 SHELL = /bin/bash
 NS = lp/hugo-builder
 PORTS = -p 1313:1313
@@ -9,6 +11,7 @@ srcdir = .
 
 default: build
 
+lint: static-analysis
 build: static-analysis docker-build
 start: hugo-server-start
 stop: hugo-server-stop
