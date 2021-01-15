@@ -6,6 +6,8 @@ SHELL = /bin/bash
 NS = lp/hugo-builder
 PORTS = -p 1313:1313
 VOLUMES = -v "$(realpath ./orgdocs)":/src
+NAME = hugo-server
+IMAGE = lp/hugo-builder
 
 srcdir = .
 
@@ -23,24 +25,35 @@ static-analysis:
 
 docker-build:
 	@echo "Building Hugo Builder container..."
-	docker build -t lp/hugo-builder .
+	docker build -t ${IMAGE} .
 	@echo "Hugo Builder container built!"
-	docker images lp/hugo-builder
+	docker images ${IMAGE}
 
-hugo-build:
+hugo-build: 
 	@echo "Building thing..."
-	@docker run -dt --rm $(VOLUMES) lp/hugo-builder hugo
-	sleep 1 # Pause a second to let this container stop.
+	@docker run -dt --rm $(VOLUMES) --name ${NAME} ${IMAGE} hugo
+	sleep 2 # Pause a moment to let this container stop.
 	@echo "Thing built!"
-	
+
 hugo-server-start: hugo-build
 	@echo "Starting server..."
-	docker run -dt --rm $(VOLUMES) $(PORTS) lp/hugo-builder hugo server -w --bind=0.0.0.0
+	docker run -dt --rm $(VOLUMES) $(PORTS) --name ${NAME} ${IMAGE} hugo server -w --bind=0.0.0.0
 	@echo "Server started!"
 	docker ps
 
+check-health:
+	@echo "Checking the health of the Hugo Server..."
+	@docker inspect --format='{{json .State.Health}}' ${NAME}
+
 hugo-server-stop:
 	@echo "Stopping server..."
-	docker stop `docker container ls -qf "ancestor=lp/hugo-builder"`
+	docker stop `docker container ls -qf "ancestor=${IMAGE}"`
 	@echo "Server stopped!"
 	docker ps
+
+inspect-labels:
+	@echo "Inspecting Hugo Server Container labels..."
+	@echo "maintainer set to..."
+	@docker inspect --format '{{ index .Config.Labels "maintainer" }}' \
+			${NAME}
+	@echo "Labels inspected!"

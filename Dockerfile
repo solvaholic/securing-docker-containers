@@ -1,4 +1,6 @@
-FROM alpine:3.12
+ARG ALPINE_VERSION=3.12
+
+FROM alpine:${ALPINE_VERSION}
 
 # TODO: Learn from https://gist.github.com/mouttounet/d8347e0555c1d232b7bacb881c3ef1da
 
