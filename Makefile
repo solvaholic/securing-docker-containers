@@ -13,7 +13,7 @@ srcdir = .
 
 default: build
 
-lint: static-analysis
+lint: static-analysis dockerfile_policies
 build: static-analysis docker-build
 start: hugo-server-start
 stop: hugo-server-stop
@@ -57,3 +57,10 @@ inspect-labels:
 	@docker inspect --format '{{ index .Config.Labels "maintainer" }}' \
 			${NAME}
 	@echo "Labels inspected!"
+
+dockerfile_policies:
+	@echo "Checking Container policies..."
+	@docker run --rm -it -v $(PWD):/root/ \
+			projectatomic/dockerfile-lint \
+			dockerfile_lint --rulefile policies/all.yml
+	@echo "FinShare Container policies checked!"
