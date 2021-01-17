@@ -62,5 +62,5 @@ dockerfile_policies:
 	@echo "Checking Container policies..."
 	@docker run --rm -it -v $(PWD):/root/ \
 			projectatomic/dockerfile-lint \
-			dockerfile_lint --rulefile policies/all.yml
+			dockerfile_lint --rulefile .docker_lint/all.yml
 	@echo "FinShare Container policies checked!"
